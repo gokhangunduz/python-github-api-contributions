@@ -40,8 +40,8 @@ def createdb():
     sqldb.execute("CREATE TABLE IF NOT EXISTS contributionstable(mainrepourl TEXT, url TEXT, htmlurl TEXT, followersurl TEXT, followingurl TEXT, reposurl TEXT, contributions TEXT)")
     return sqlconnection, sqldb
 
-username = input("Github Username :")
-token = input("Github Personal Access Token")
+username = input("Github Username : ")
+token = input("Github Personal Access Token : ")
 
 urlslist = []
 readreposlist()
@@ -55,12 +55,15 @@ for z in range(0,len(urlslist)):
         if i > 0: response = requests.get(urlslist[z] + "?page=" + str(i), auth=HTTPBasicAuth(username,token)).json()
         ratelimit()
         for x in range(len(response)):
-            sqldb.execute("INSERT INTO contributionstable VALUES ('"+urlslist[z]+"','"+response[x]['url']+"','"+response[x]['html_url']+"','"+response[x]['followers_url']+"','"+response[x]['following_url']+"','"+response[x]['repos_url']+"','"+str(response[x]['contributions'])+"')")
-            sqlconnection.commit()
+            try:
+                sqldb.execute("INSERT INTO contributionstable VALUES ('"+urlslist[z]+"','"+response[x]['url']+"','"+response[x]['html_url']+"','"+response[x]['followers_url']+"','"+response[x]['following_url']+"','"+response[x]['repos_url']+"','"+str(response[x]['contributions'])+"')")
+                sqlconnection.commit()
+            except:
+                pass
     print("Working...")
 
-sqlconnection.close()
 print("Succesful")
+sqlconnection.close()
 exit()
              
 
