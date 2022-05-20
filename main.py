@@ -1,5 +1,6 @@
 from time import sleep
-import requests, sqlite3
+from termcolor import colored
+import requests, sqlite3, time
 from requests.auth import HTTPBasicAuth
 
 def pagecount():
@@ -17,8 +18,14 @@ def pagecount():
 
 def ratelimit():
     if int(header['X-RateLimit-Remaining']) <= 1:
-        print("Waiting Rate Limit")
-        sleep(3600)
+        print(colored("Waiting Rate Limit", "red"))
+        now = int(time.time())
+        ratelimit = header['X-RateLimit-Reset']
+        print("Now : " + str(now))
+        print("Rate Time : " + str(ratelimit))
+        while ratelimit < now:
+            now = int(time.time())
+            ratelimit = header['X-RateLimit-Reset']
     else:
         print("Avaliable Rate Limit:" + header['X-RateLimit-Remaining'])
 
@@ -53,14 +60,13 @@ for z in range(0,len(urlslist)):
     ratelimit()
     for i in range(pagecount()):
         if i > 0: response = requests.get(urlslist[z] + "?page=" + str(i), auth=HTTPBasicAuth(username,token)).json()
-        ratelimit()
         for x in range(len(response)):
             try:
                 sqldb.execute("INSERT INTO contributionstable VALUES ('"+urlslist[z]+"','"+response[x]['url']+"','"+response[x]['html_url']+"','"+response[x]['followers_url']+"','"+response[x]['following_url']+"','"+response[x]['repos_url']+"','"+str(response[x]['contributions'])+"')")
                 sqlconnection.commit()
             except:
                 pass
-    print("Working...")
+    print(colored("Working...", "green"))
 
 print("Succesful")
 sqlconnection.close()
