@@ -20,12 +20,12 @@ def ratelimit():
     if int(header['X-RateLimit-Remaining']) <= 1:
         print(colored("Waiting Rate Limit", "red"))
         now = int(time.time())
-        ratelimit = header['X-RateLimit-Reset']
+        ratelimit = int(header['X-RateLimit-Reset'])
         print("Now : " + str(now))
         print("Rate Time : " + str(ratelimit))
         while ratelimit < now:
             now = int(time.time())
-            ratelimit = header['X-RateLimit-Reset']
+            ratelimit = int(header['X-RateLimit-Reset'])
     else:
         print("Avaliable Rate Limit:" + header['X-RateLimit-Remaining'])
 
@@ -68,8 +68,6 @@ for z in range(0,len(urlslist)):
                 pass
     print(colored("Working...", "green"))
 
-print("Succesful")
+print(colored("Succesful","blue"))
 sqlconnection.close()
 exit()
-             
-
