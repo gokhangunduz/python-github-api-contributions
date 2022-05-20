@@ -2,7 +2,6 @@ from time import sleep
 import requests, sqlite3
 from requests.auth import HTTPBasicAuth
 
-
 def pagecount():
     if 'rel="last"' in str(header):
         try:
@@ -60,6 +59,7 @@ for z in range(0,len(urlslist)):
             sqlconnection.commit()
     print("Working...")
 
+sqlconnection.close()
 print("Succesful")
 exit()
              
